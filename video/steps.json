@@ -1,0 +1,421 @@
+{
+ "baseURL": "http://localhost:3100",
+ "viewport": {
+  "width": 1280,
+  "height": 720
+ },
+ "slowMo": 120,
+ "headless": true,
+ "setup": [
+  {
+   "do": "goto",
+   "url": "/"
+  },
+  {
+   "do": "fill",
+   "target": "input:not([type=hidden]):not([type=password])",
+   "value": "$env:DASH_EMAIL"
+  },
+  {
+   "do": "fill",
+   "target": "input[type=password]",
+   "value": "$env:DASH_PASSWORD"
+  },
+  {
+   "do": "press",
+   "key": "Enter"
+  },
+  {
+   "do": "waitFor",
+   "target": "text=Welcome to your API dashboard"
+  }
+ ],
+ "steps": [
+  {
+   "do": "goto",
+   "url": "http://novapay.localhost:5180/",
+   "beat": "blocked"
+  },
+  {
+   "do": "expect",
+   "text": "0 of 4 APIs reachable"
+  },
+  {
+   "do": "highlight",
+   "target": "main",
+   "seconds": 3
+  },
+  {
+   "do": "pause",
+   "seconds": 4
+  },
+  {
+   "do": "goto",
+   "url": "/",
+   "beat": "manager"
+  },
+  {
+   "do": "click",
+   "target": "a[href=\"/fragments\"]"
+  },
+  {
+   "do": "expect",
+   "text": "cors-browser-apps"
+  },
+  {
+   "do": "highlight",
+   "target": "tr:has-text(\"cors-browser-apps\")",
+   "seconds": 3
+  },
+  {
+   "do": "pause",
+   "seconds": 2
+  },
+  {
+   "do": "click",
+   "target": "td:has-text(\"cors-browser-apps\")",
+   "beat": "usage"
+  },
+  {
+   "do": "expect",
+   "text": "APIs using this fragment (4)"
+  },
+  {
+   "do": "pause",
+   "seconds": 2
+  },
+  {
+   "do": "hover",
+   "target": "text=APIs using this fragment (4)"
+  },
+  {
+   "do": "scroll",
+   "y": 330
+  },
+  {
+   "do": "highlight",
+   "target": "table:has-text(\"accounts-api\")",
+   "seconds": 4
+  },
+  {
+   "do": "pause",
+   "seconds": 1
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Edit\")",
+   "beat": "edit"
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Configuration\")"
+  },
+  {
+   "do": "waitFor",
+   "target": ".view-line:has-text(\"app.meridian.example\")"
+  },
+  {
+   "do": "pause",
+   "seconds": 1
+  },
+  {
+   "do": "click",
+   "target": ".view-line:has-text(\"app.meridian.example\")"
+  },
+  {
+   "do": "press",
+   "key": "End"
+  },
+  {
+   "do": "press",
+   "key": ","
+  },
+  {
+   "do": "press",
+   "key": "Enter"
+  },
+  {
+   "do": "press",
+   "key": "\""
+  },
+  {
+   "do": "press",
+   "key": "h"
+  },
+  {
+   "do": "press",
+   "key": "t"
+  },
+  {
+   "do": "press",
+   "key": "t"
+  },
+  {
+   "do": "press",
+   "key": "p"
+  },
+  {
+   "do": "press",
+   "key": ":"
+  },
+  {
+   "do": "press",
+   "key": "/"
+  },
+  {
+   "do": "press",
+   "key": "/"
+  },
+  {
+   "do": "press",
+   "key": "n"
+  },
+  {
+   "do": "press",
+   "key": "o"
+  },
+  {
+   "do": "press",
+   "key": "v"
+  },
+  {
+   "do": "press",
+   "key": "a"
+  },
+  {
+   "do": "press",
+   "key": "p"
+  },
+  {
+   "do": "press",
+   "key": "a"
+  },
+  {
+   "do": "press",
+   "key": "y"
+  },
+  {
+   "do": "press",
+   "key": "."
+  },
+  {
+   "do": "press",
+   "key": "l"
+  },
+  {
+   "do": "press",
+   "key": "o"
+  },
+  {
+   "do": "press",
+   "key": "c"
+  },
+  {
+   "do": "press",
+   "key": "a"
+  },
+  {
+   "do": "press",
+   "key": "l"
+  },
+  {
+   "do": "press",
+   "key": "h"
+  },
+  {
+   "do": "press",
+   "key": "o"
+  },
+  {
+   "do": "press",
+   "key": "s"
+  },
+  {
+   "do": "press",
+   "key": "t"
+  },
+  {
+   "do": "press",
+   "key": ":"
+  },
+  {
+   "do": "press",
+   "key": "5"
+  },
+  {
+   "do": "press",
+   "key": "1"
+  },
+  {
+   "do": "press",
+   "key": "8"
+  },
+  {
+   "do": "press",
+   "key": "0"
+  },
+  {
+   "do": "press",
+   "key": "\""
+  },
+  {
+   "do": "pause",
+   "seconds": 3
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Save Fragment\")"
+  },
+  {
+   "do": "pause",
+   "seconds": 4
+  },
+  {
+   "do": "goto",
+   "url": "http://novapay.localhost:5180/",
+   "beat": "allowed"
+  },
+  {
+   "do": "expect",
+   "text": "4 of 4 APIs reachable"
+  },
+  {
+   "do": "highlight",
+   "target": "main",
+   "seconds": 3
+  },
+  {
+   "do": "pause",
+   "seconds": 4
+  },
+  {
+   "do": "goto",
+   "url": "/apis",
+   "beat": "badge"
+  },
+  {
+   "do": "click",
+   "target": "text=Payments API"
+  },
+  {
+   "do": "waitFor",
+   "target": "text=Set by cors-browser-apps"
+  },
+  {
+   "do": "scroll",
+   "target": "text=Set by cors-browser-apps"
+  },
+  {
+   "do": "highlight",
+   "target": "text=Set by cors-browser-apps",
+   "seconds": 4
+  },
+  {
+   "do": "pause",
+   "seconds": 2
+  },
+  {
+   "do": "goto",
+   "url": "/fragments/cors-browser-apps",
+   "beat": "guard"
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Edit\")"
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Configuration\")"
+  },
+  {
+   "do": "waitFor",
+   "target": ".view-line:has-text(\"allowCredentials\")"
+  },
+  {
+   "do": "click",
+   "target": ".view-line:has-text(\"allowCredentials\")"
+  },
+  {
+   "do": "press",
+   "key": "End"
+  },
+  {
+   "do": "press",
+   "key": "Backspace"
+  },
+  {
+   "do": "press",
+   "key": "Backspace"
+  },
+  {
+   "do": "press",
+   "key": "Backspace"
+  },
+  {
+   "do": "press",
+   "key": "Backspace"
+  },
+  {
+   "do": "press",
+   "key": "Backspace"
+  },
+  {
+   "do": "press",
+   "key": "\""
+  },
+  {
+   "do": "press",
+   "key": "y"
+  },
+  {
+   "do": "press",
+   "key": "e"
+  },
+  {
+   "do": "press",
+   "key": "s"
+  },
+  {
+   "do": "press",
+   "key": "\""
+  },
+  {
+   "do": "press",
+   "key": ","
+  },
+  {
+   "do": "pause",
+   "seconds": 2
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Save Fragment\")"
+  },
+  {
+   "do": "expect",
+   "text": "nothing was saved"
+  },
+  {
+   "do": "highlight",
+   "target": "text=nothing was saved",
+   "seconds": 4
+  },
+  {
+   "do": "pause",
+   "seconds": 4
+  },
+  {
+   "do": "goto",
+   "url": "http://novapay.localhost:5180/",
+   "beat": "still"
+  },
+  {
+   "do": "expect",
+   "text": "4 of 4 APIs reachable"
+  },
+  {
+   "do": "pause",
+   "seconds": 5
+  }
+ ]
+}

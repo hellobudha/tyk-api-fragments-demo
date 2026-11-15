@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>NovaPay · Connect your bank</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body { margin: 0; font: 16px/1.5 -apple-system, "Segoe UI", Inter, sans-serif; background: #f4f5f9; color: #15172b; }
+  header { background: #0b1f3a; color: #fff; padding: 18px 40px; font-size: 20px; font-weight: 700; letter-spacing: .2px; }
+  header span { color: #5eead4; }
+  main { max-width: 860px; margin: 36px auto; padding: 0 24px; }
+  h1 { font-size: 30px; margin: 0 0 6px; }
+  p.lead { margin: 0 0 24px; color: #50546b; }
+  code { background: #e7e9f2; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(20,23,43,.12); }
+  th, td { text-align: left; padding: 16px 20px; border-bottom: 1px solid #eceef5; font-size: 17px; }
+  th { font-size: 13px; text-transform: uppercase; letter-spacing: .6px; color: #6b6f86; background: #fafbfe; }
+  tr:last-child td { border-bottom: 0; }
+  .pill { display: inline-block; padding: 5px 14px; border-radius: 999px; font-weight: 600; font-size: 15px; }
+  .ok { background: #dcfce7; color: #166534; }
+  .no { background: #fee2e2; color: #991b1b; }
+  .wait { background: #eceef5; color: #50546b; }
+  #summary { margin: 0 0 16px; font-size: 22px; font-weight: 700; }
+</style>
+</head>
+<body>
+<header>Nova<span>Pay</span></header>
+<main>
+  <h1>Connect to Meridian Bank</h1>
+  <p class="lead">This page is served from <code id="origin"></code> and calls four Meridian APIs
+    through Tyk Gateway at <code id="gw"></code>. The browser decides, using CORS, whether it may read each answer.</p>
+  <div id="summary">Calling Meridian Bank…</div>
+  <table>
+    <thead><tr><th>Meridian API</th><th>Request</th><th>Result in this browser</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</main>
+<script>
+  // The Gateway address can be overridden with ?gw=http://host:port
+  const gw = new URLSearchParams(location.search).get('gw') || 'http://localhost:8280';
+  const apis = ['accounts', 'payments', 'cards', 'loans'];
+  document.getElementById('origin').textContent = location.origin;
+  document.getElementById('gw').textContent = gw;
+  const rows = document.getElementById('rows');
+  const cells = {};
+  for (const api of apis) {
+    const tr = rows.insertRow();
+    tr.insertCell().textContent = api[0].toUpperCase() + api.slice(1) + ' API';
+    tr.insertCell().innerHTML = '<code>GET /' + api + '/' + api + '</code>';
+    cells[api] = tr.insertCell();
+    cells[api].innerHTML = '<span class="pill wait">Calling…</span>';
+  }
+  (async () => {
+    let ok = 0;
+    for (const api of apis) {
+      try {
+        const res = await fetch(gw + '/' + api + '/' + api, { cache: 'no-store' });
+        cells[api].innerHTML = res.ok
+          ? '<span class="pill ok">Connected · HTTP ' + res.status + '</span>'
+          : '<span class="pill no">HTTP ' + res.status + '</span>';
+        if (res.ok) ok++;
+      } catch (e) {
+        // A CORS refusal surfaces as a network error: the browser withholds the response.
+        cells[api].innerHTML = '<span class="pill no">Blocked by the browser (CORS)</span>';
+      }
+    }
+    document.getElementById('summary').textContent = ok + ' of ' + apis.length + ' APIs reachable from NovaPay';
+  })();
+</script>
+</body>
+</html>

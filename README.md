@@ -8,6 +8,13 @@ baseline, fix all of them without touching the teams' work, roll out a partner l
 request, fail to break production three different ways, and onboard a fourth team that never
 gets the chance to drift.
 
+## Record the video
+
+`video/record.sh` records a 97-second walkthrough of the real Tyk Dashboard and Gateway, with
+subtitles and no voiceover. A partner's web app is blocked by four APIs, one Fragment is edited,
+all four APIs accept it, and a breaking edit is refused. `video/story.tsv` holds the on-screen
+text and a narration script for each beat. Recorded videos are not kept in this repository.
+
 ## The problem
 
 Every organisation with more than a handful of APIs has settings that are meant to be the same
@@ -133,6 +140,8 @@ see the *Shared configuration* badge.
 | `templates/` | The API Template that carries the references for new APIs. |
 | `apis/new/loans.json` | Everything the fourth team had to write. |
 | `demo/lib.sh` | The audit and the helpers. Read `audit()` to see how each column is measured. |
+| `partner-app/` | The partner's web page used in the video. It calls the four APIs from a real browser. |
+| `video/` | The storyboard and recorded steps for the walkthrough video, and `record.sh` to record it. |
 
 ## The Dashboard API calls the walkthrough uses
 
@@ -145,6 +154,18 @@ see the *Shared configuration* badge.
 | `GET /api/apis/oas/{apiId}/fragments` | Every Fragment the API references, keyed by where it is used. |
 | `GET /api/assets/{id}/apis` | Every API that references a Fragment. |
 | `POST /api/apis/oas?templateID={id}` | Create an API from a Template, references included. |
+
+## Try the partner page yourself
+
+After Act 5, serve the partner page and open <http://novapay.localhost:5180>:
+
+```bash
+python3 -m http.server 5180 --bind 127.0.0.1 --directory partner-app
+```
+
+All four APIs are blocked by the browser. In the Dashboard, open **Assets > Fragments >
+cors-browser-apps**, choose **Edit**, add `"http://novapay.localhost:5180"` to `allowedOrigins`
+on the **Configuration** tab and save. Reload the page and all four connect.
 
 ## Things to know before you use Fragments for real
 

@@ -75,6 +75,9 @@ services:
       - dashboard
       - redis
 
-  # Stands in for the three teams' backend services. It echoes each request.
+  # Stands in for the teams' backend services. See stack/upstream.js.
   upstream:
-    image: mccutchen/go-httpbin:v2.15.0
+    image: node:22-alpine
+    command: ["node", "/srv/upstream.js"]
+    volumes:
+      - ./stack/upstream.js:/srv/upstream.js:ro

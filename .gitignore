@@ -1,2 +1,8 @@
 .env
 .demo/
+
+# Recorded videos stay local. Record one with video/record.sh.
+*.mp4
+*.webm
+*.mov
+*.gif
