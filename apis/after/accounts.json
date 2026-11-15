@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Accounts API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Accounts team",
+      "email": "accounts-team@meridian.example"
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "operationId": "listAccounts",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "x-tyk-api-gateway": {
+    "info": {
+      "id": "accounts-api",
+      "name": "Accounts API",
+      "state": {
+        "active": true
+      }
+    },
+    "server": {
+      "listenPath": {
+        "value": "/accounts/",
+        "strip": true
+      }
+    },
+    "upstream": {
+      "url": "http://upstream:8080/anything/accounts-service",
+      "rateLimit": {
+        "$ref": "fragment://rate-limit-standard"
+      }
+    },
+    "middleware": {
+      "global": {
+        "cors": {
+          "$ref": "fragment://cors-browser-apps"
+        },
+        "transformResponseHeaders": {
+          "$ref": "fragment://security-response-headers"
+        }
+      }
+    }
+  }
+}

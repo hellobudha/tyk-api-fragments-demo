@@ -1,0 +1,94 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Payments API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Payments team",
+      "email": "payments-team@meridian.example"
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "operationId": "listPayments",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "x-tyk-api-gateway": {
+    "info": {
+      "id": "payments-api",
+      "name": "Payments API",
+      "state": {
+        "active": true
+      }
+    },
+    "server": {
+      "listenPath": {
+        "value": "/payments/",
+        "strip": true
+      }
+    },
+    "upstream": {
+      "url": "http://upstream:8080/anything/payments-service",
+      "rateLimit": {
+        "enabled": true,
+        "rate": 20,
+        "per": "10s"
+      }
+    },
+    "middleware": {
+      "global": {
+        "cors": {
+          "enabled": true,
+          "allowedOrigins": [
+            "*"
+          ],
+          "allowedMethods": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS"
+          ],
+          "allowedHeaders": [
+            "*"
+          ],
+          "maxAge": 600
+        },
+        "transformResponseHeaders": {
+          "enabled": true,
+          "add": [
+            {
+              "name": "Strict-Transport-Security",
+              "value": "max-age=63072000; includeSubDomains"
+            },
+            {
+              "name": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-store"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

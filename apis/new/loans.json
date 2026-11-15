@@ -1,0 +1,51 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Loans API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Loans team",
+      "email": "loans-team@meridian.example"
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/loans": {
+      "get": {
+        "operationId": "listLoans",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "x-tyk-api-gateway": {
+    "info": {
+      "id": "loans-api",
+      "name": "Loans API",
+      "state": {
+        "active": true
+      }
+    },
+    "server": {
+      "listenPath": {
+        "value": "/loans/",
+        "strip": true
+      }
+    },
+    "upstream": {
+      "url": "http://upstream:8080/anything/loans-service"
+    }
+  }
+}

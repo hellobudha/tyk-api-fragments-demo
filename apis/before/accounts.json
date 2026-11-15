@@ -1,0 +1,94 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Accounts API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Accounts team",
+      "email": "accounts-team@meridian.example"
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "operationId": "listAccounts",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "x-tyk-api-gateway": {
+    "info": {
+      "id": "accounts-api",
+      "name": "Accounts API",
+      "state": {
+        "active": true
+      }
+    },
+    "server": {
+      "listenPath": {
+        "value": "/accounts/",
+        "strip": true
+      }
+    },
+    "upstream": {
+      "url": "http://upstream:8080/anything/accounts-service",
+      "rateLimit": {
+        "enabled": true,
+        "rate": 20,
+        "per": "10s"
+      }
+    },
+    "middleware": {
+      "global": {
+        "cors": {
+          "enabled": true,
+          "allowedOrigins": [
+            "https://app.meridian.example"
+          ],
+          "allowedMethods": [
+            "GET",
+            "POST",
+            "OPTIONS"
+          ],
+          "allowedHeaders": [
+            "Authorization",
+            "Content-Type"
+          ],
+          "allowCredentials": true,
+          "maxAge": 600
+        },
+        "transformResponseHeaders": {
+          "enabled": true,
+          "add": [
+            {
+              "name": "Strict-Transport-Security",
+              "value": "max-age=63072000; includeSubDomains"
+            },
+            {
+              "name": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-store"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

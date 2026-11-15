@@ -1,0 +1,80 @@
+# A throwaway Tyk Self-Managed stack for the API Fragments walkthrough.
+# The secrets and passwords below are development defaults. Do not reuse them.
+name: fragments-demo
+
+services:
+  redis:
+    image: redis:7.2.0
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tykuser
+      POSTGRES_PASSWORD: tykSecurePass123
+      POSTGRES_DB: tyk_analytics
+    volumes:
+      - ./stack/dbs.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tykuser -d tyk_dashboard"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  dashboard:
+    image: tykio/tyk-dashboard:${DASHBOARD_VERSION:-v5.16.0}
+    ports:
+      - "${DASHBOARD_PORT:-3100}:3000"
+    environment:
+      TYK_DB_LICENSEKEY: ${TYK_LICENSE_KEY:?Set TYK_LICENSE_KEY in .env (copy .env.example)}
+      TYK_DB_LISTENPORT: "3000"
+      TYK_DB_ADMINSECRET: admin-secret
+      TYK_DB_NODESECRET: 352d20ee67be67f6340b4c0605b044b7
+      TYK_DB_TYKAPI_HOST: http://gateway
+      TYK_DB_TYKAPI_PORT: "8080"
+      TYK_DB_TYKAPI_SECRET: 352d20ee67be67f6340b4c0605b044b7
+      TYK_DB_REDISADDRS: redis:6379
+      TYK_DB_STORAGE_MAIN_TYPE: postgres
+      TYK_DB_STORAGE_MAIN_CONNECTIONSTRING: user=tykuser password=tykSecurePass123 host=postgres port=5432 database=tyk_dashboard sslmode=disable
+      TYK_DB_STORAGE_ANALYTICS_TYPE: postgres
+      TYK_DB_STORAGE_ANALYTICS_CONNECTIONSTRING: user=tykuser password=tykSecurePass123 host=postgres port=5432 database=tyk_analytics sslmode=disable
+      TYK_DB_HOSTCONFIG_ENABLEHOSTNAMES: "false"
+      TYK_DB_NOTIFYONCHANGE: "true"
+      TYK_DB_HASHKEYS: "true"
+      # The demo Dashboard is served over plain HTTP on localhost.
+      TYK_DB_SECURITY_CSRFALLOWMISSINGORIGIN: "true"
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  gateway:
+    image: tykio/tyk-gateway-ee:${GATEWAY_VERSION:-v5.16.0}
+    ports:
+      - "${GATEWAY_PORT:-8280}:8080"
+    environment:
+      TYK_GW_LISTENPORT: "8080"
+      TYK_GW_SECRET: 352d20ee67be67f6340b4c0605b044b7
+      TYK_GW_NODESECRET: 352d20ee67be67f6340b4c0605b044b7
+      TYK_GW_STORAGE_TYPE: redis
+      TYK_GW_STORAGE_ADDRS: redis:6379
+      TYK_GW_USEDBAPPCONFIGS: "true"
+      TYK_GW_DBAPPCONFOPTIONS_CONNECTIONSTRING: http://dashboard:3000
+      TYK_GW_POLICIES_POLICYSOURCE: service
+      TYK_GW_POLICIES_POLICYCONNECTIONSTRING: http://dashboard:3000
+      TYK_GW_HASHKEYS: "true"
+      TYK_GW_ALLOWINSECURECONFIGS: "true"
+      TYK_GW_HTTPSERVEROPTIONS_ENABLESTRICTROUTES: "true"
+      TYK_GW_HTTPSERVEROPTIONS_ENABLEPATHPREFIXMATCHING: "true"
+    depends_on:
+      - dashboard
+      - redis
+
+  # Stands in for the three teams' backend services. It echoes each request.
+  upstream:
+    image: mccutchen/go-httpbin:v2.15.0

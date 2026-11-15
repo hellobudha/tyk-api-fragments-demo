@@ -1,0 +1,78 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cards API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Cards team",
+      "email": "cards-team@meridian.example"
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cards": {
+      "get": {
+        "operationId": "listCards",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "x-tyk-api-gateway": {
+    "info": {
+      "id": "cards-api",
+      "name": "Cards API",
+      "state": {
+        "active": true
+      }
+    },
+    "server": {
+      "listenPath": {
+        "value": "/cards/",
+        "strip": true
+      }
+    },
+    "upstream": {
+      "url": "http://upstream:8080/anything/cards-service",
+      "rateLimit": {
+        "enabled": true,
+        "rate": 200,
+        "per": "10s"
+      }
+    },
+    "middleware": {
+      "global": {
+        "cors": {
+          "enabled": true,
+          "allowedOrigins": [
+            "https://app.meridian.example",
+            "https://staging.meridian.example"
+          ],
+          "allowedMethods": [
+            "GET",
+            "POST",
+            "OPTIONS"
+          ],
+          "allowedHeaders": [
+            "Authorization",
+            "Content-Type"
+          ],
+          "allowCredentials": true,
+          "maxAge": 600
+        }
+      }
+    }
+  }
+}

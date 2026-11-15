@@ -1,0 +1,27 @@
+{
+  "id": "cors-browser-apps",
+  "name": "cors-browser-apps",
+  "kind": "fragment",
+  "description": "Browser origins allowed to call Meridian APIs. Owned by the platform team.",
+  "tags": [
+    "platform",
+    "security"
+  ],
+  "data": {
+    "enabled": true,
+    "allowedOrigins": [
+      "https://app.meridian.example"
+    ],
+    "allowedMethods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ],
+    "allowedHeaders": [
+      "Authorization",
+      "Content-Type"
+    ],
+    "allowCredentials": true,
+    "maxAge": 600
+  }
+}

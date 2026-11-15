@@ -1,0 +1,44 @@
+{
+  "id": "meridian-api-baseline",
+  "name": "Meridian API baseline",
+  "kind": "oas-template",
+  "description": "Starting point for every new Meridian API. Carries the three platform fragments.",
+  "data": {
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Meridian API baseline",
+      "version": "1.0.0"
+    },
+    "paths": {},
+    "x-tyk-api-gateway": {
+      "info": {
+        "name": "Meridian API baseline",
+        "state": {
+          "active": true
+        }
+      },
+      "server": {
+        "listenPath": {
+          "value": "/",
+          "strip": true
+        }
+      },
+      "upstream": {
+        "url": "http://upstream:8080",
+        "rateLimit": {
+          "$ref": "fragment://rate-limit-standard"
+        }
+      },
+      "middleware": {
+        "global": {
+          "cors": {
+            "$ref": "fragment://cors-browser-apps"
+          },
+          "transformResponseHeaders": {
+            "$ref": "fragment://security-response-headers"
+          }
+        }
+      }
+    }
+  }
+}

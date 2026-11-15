@@ -1,0 +1,15 @@
+{
+  "id": "rate-limit-standard",
+  "name": "rate-limit-standard",
+  "kind": "fragment",
+  "description": "Standard per-API rate limit that protects shared core banking capacity.",
+  "tags": [
+    "platform",
+    "capacity"
+  ],
+  "data": {
+    "enabled": true,
+    "rate": 20,
+    "per": "10s"
+  }
+}
