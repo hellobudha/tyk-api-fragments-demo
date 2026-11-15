@@ -37,6 +37,7 @@ for api in "${APIS[@]}"; do
 done
 # Running setup again rewinds the story: remove what the later acts created.
 dash DELETE /api/apis/oas/loans-api >/dev/null
+[ -x "$ROOT/video/scale.sh" ] && "$ROOT/video/scale.sh" down >/dev/null
 for asset in meridian-api-baseline cors-browser-apps rate-limit-standard security-response-headers; do
   dash DELETE "/api/assets/$asset" >/dev/null
 done

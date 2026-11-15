@@ -1,0 +1,25 @@
+# team	api (listen path /<api>/). The first API of the first four teams already exists in the main demo.
+Accounts	accounts
+Accounts	balances
+Accounts	statements
+Accounts	beneficiaries
+Payments	payments
+Payments	transfers
+Payments	standing-orders
+Payments	direct-debits
+Cards	cards
+Cards	card-controls
+Cards	disputes
+Cards	rewards
+Lending	loans
+Lending	mortgages
+Lending	credit-score
+Lending	overdrafts
+Markets	fx-rates
+Markets	investments
+Markets	pensions
+Markets	savings
+Identity	customers
+Identity	consents
+Identity	kyc
+Identity	notifications

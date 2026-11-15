@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Story scenes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Colours and type follow the Tyk 5.16 launch pages. The stage is 1280x720. */
+  :root { --bg:#140527; --bg-2:#0C0C36; --bg-3:#03031C; --card:#1C1340; --card-2:#241A4F; --line:#3B2853; --line-2:#4A3A72;
+          --fg:#FEF9FF; --body:#D8D1E0; --muted:#A79FBF; --purple:#8438FA; --purple-2:#C380FF; --teal:#23E2C2; --teal-2:#84F1DF;
+          --danger:#FF8A8A; --danger-bg:rgba(192,38,75,.28); --amber:#FFC56B;
+          --display:"Lexend","Inter",system-ui,sans-serif; --font:"Inter",system-ui,sans-serif; --mono:"Roboto Mono",ui-monospace,Menlo,monospace; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1280px; height: 720px; overflow: hidden; background: var(--bg-3); color: var(--fg); font-family: var(--font); }
+  body::before { content: ""; position: fixed; inset: 0;
+    background: radial-gradient(900px 520px at 85% -10%, rgba(132,56,250,.42), transparent 60%),
+                radial-gradient(700px 420px at -5% 105%, rgba(35,226,194,.16), transparent 60%),
+                linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 55%, var(--bg-3) 100%); }
+  .scene { position: absolute; inset: 0; padding: 44px 64px; display: none; flex-direction: column; justify-content: center; }
+  .scene.on { display: flex; }
+  #tickets.on { display: block; }
+  .stamp { font-family: var(--mono); font-size: 17px; letter-spacing: 1.5px; color: var(--teal); text-transform: uppercase; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 54px; line-height: 1.12; margin: 10px 0 0; letter-spacing: -.5px; }
+  h1 em { font-style: normal; color: var(--purple-2); }
+  .pop { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .pop.in { opacity: 1; transform: none; }
+  .logo { flex: none; height: 34px; width: 76px; background: url(http://localhost:3100/images/dashboard_logo_retina2.png) left center / auto 34px no-repeat; }
+
+  /* Scene 1: the request */
+  .chat { margin-top: 30px; width: 1000px; }
+  .msg { display: flex; gap: 14px; margin-top: 16px; }
+  .av { flex: none; width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font: 700 16px var(--display); }
+  .av.d { background: #F7B955; color: #3a2300; } .av.p { background: var(--purple); }
+  .bub { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 22px; font-size: 25px; line-height: 1.4; color: var(--body); }
+  .bub b { color: var(--fg); } .who { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+  .bub .hot { color: var(--danger); font-weight: 600; }
+
+  /* Scene 2: the tickets */
+  #tickets { padding: 30px 40px; }
+  .bar { display: flex; align-items: flex-end; gap: 28px; }
+  .bar h1 { font-size: 34px; margin: 4px 0 0; }
+  .clock { margin-left: auto; text-align: right; }
+  .clock .t { font: 600 30px var(--mono); color: var(--fg); }
+  .clock .n { font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .clock.late .t { color: var(--danger); }
+  .cols { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-top: 18px; }
+  .col h3 { margin: 0 0 8px; font: 600 12px var(--font); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .tk { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px 10px; margin-bottom: 9px; height: 92px; transition: border-color .3s, background .3s; }
+  .tk .n { font: 600 14px var(--font); }
+  .tk .id { font: 11px var(--mono); color: var(--muted); margin-top: 1px; }
+  .chip { display: inline-block; margin-top: 9px; font: 600 11.5px var(--font); padding: 4px 9px; border-radius: 999px; background: rgba(167,159,191,.16); color: var(--muted); }
+  .tk.s1 .chip { background: rgba(132,56,250,.25); color: var(--purple-2); }
+  .tk.s2 .chip { background: rgba(255,197,107,.18); color: var(--amber); }
+  .tk.done { border-color: rgba(35,226,194,.5); } .tk.done .chip { background: rgba(35,226,194,.16); color: var(--teal); }
+  .tk.stuck { border-color: rgba(255,138,138,.65); background: #2a1238; } .tk.stuck .chip { background: var(--danger-bg); color: var(--danger); }
+  .verdict { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 40px 26px; display: flex; align-items: center; gap: 22px;
+             background: linear-gradient(180deg, transparent, rgba(3,3,28,.96) 38%); }
+  .verdict .big { font: 700 30px var(--display); }
+  .verdict .big.red { color: var(--danger); }
+  .verdict .small { font-size: 17px; color: var(--body); }
+
+  /* Scene 3 and 4: the turn and the close */
+  .center { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+  .q { font: 600 44px/1.2 var(--display); max-width: 980px; letter-spacing: -.4px; }
+  .q em { font-style: normal; color: var(--danger); }
+  .ans { margin-top: 34px; display: flex; align-items: center; gap: 22px; }
+  .ans .txt { font: 600 30px var(--display); } .ans .txt span { color: var(--teal); }
+  .pill { font: 500 14px var(--mono); color: var(--teal); border: 1px solid rgba(35,226,194,.45); border-radius: 999px; padding: 6px 14px; }
+  .stats { display: flex; gap: 22px; margin-top: 30px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px 30px; min-width: 300px; }
+  .stat .v { font: 700 76px/1 var(--display); color: var(--teal); }
+  .stat .v.p { color: var(--purple-2); }
+  .stat .k { margin-top: 8px; font-size: 17px; color: var(--body); }
+  .tag { margin-top: 34px; font: 500 26px/1.4 var(--font); color: var(--body); max-width: 1060px; }
+  .tag b { color: var(--fg); }
+  .foot { position: absolute; left: 64px; right: 64px; bottom: 40px; display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 15px; }
+</style>
+</head>
+<body>
+
+<section class="scene" id="friday">
+  <div class="stamp pop">Meridian Bank · Friday 16:02</div>
+  <h1 class="pop">“It’s a <em>small change</em>, right?”</h1>
+  <div class="chat">
+    <div class="msg pop"><div class="av d">DK</div><div class="bub"><div class="who">Dana · Partnerships</div>
+      NovaPay goes live <b>Monday 09:00</b>. Their web app just needs to be allowed to call our APIs.</div></div>
+    <div class="msg pop"><div class="av p">PS</div><div class="bub"><div class="who">Priya · Platform team</div>
+      It’s one line of CORS configuration.</div></div>
+    <div class="msg pop"><div class="av p">PS</div><div class="bub"><div class="who">Priya · Platform team</div>
+      <span class="hot">In 24 APIs. Owned by 6 teams.</span> Each has its own copy.</div></div>
+  </div>
+</section>
+
+<section class="scene" id="tickets">
+  <div class="bar">
+    <div><div class="stamp">One line of configuration · 24 copies</div><h1>24 tickets. 24 reviews. 24 deploys.</h1></div>
+    <div class="clock" id="clock"><div class="t" id="ct">Fri 16:10</div><div class="n" id="cn">0 of 24 APIs updated</div></div>
+  </div>
+  <div class="cols" id="cols"></div>
+  <div class="verdict pop" id="verdict"><div class="big" id="vb"></div><div class="small" id="vs"></div></div>
+</section>
+
+<section class="scene" id="turn">
+  <div class="center">
+    <div class="q pop">The rule is the same in every API.<br>So why is it stored <em>24 times</em>?</div>
+    <div class="ans pop"><div class="logo"></div><div class="txt">API Fragments. <span>Change it once.</span></div><div class="pill">Tyk 5.16</div></div>
+  </div>
+</section>
+
+<section class="scene" id="outro">
+  <div class="stamp pop">Meridian Bank · Friday 16:14</div>
+  <h1 class="pop">Done before the weekend.</h1>
+  <div class="stats">
+    <div class="stat pop"><div class="v">24</div><div class="k">APIs updated</div></div>
+    <div class="stat pop"><div class="v p">1</div><div class="k">edit, in one place</div></div>
+    <div class="stat pop"><div class="v">0</div><div class="k">tickets, reviews or redeploys</div></div>
+  </div>
+  <div class="tag pop">Store shared configuration once. Every API that references it follows,<br>and <b>Tyk refuses a change that would break any of them.</b></div>
+  <div class="foot pop"><div class="logo"></div><div>API Fragments · Tyk Dashboard 5.16</div></div>
+</section>
+
+<script>
+  const scene = new URLSearchParams(location.search).get('scene') || 'friday';
+  const el = document.getElementById(scene);
+  el.classList.add('on');
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const reveal = async (gap, first = 300) => {
+    await sleep(first);
+    for (const p of el.querySelectorAll('.pop')) { p.classList.add('in'); await sleep(gap); }
+  };
+
+  const teams = {
+    Accounts: ['Accounts', 'Balances', 'Statements', 'Beneficiaries'],
+    Payments: ['Payments', 'Transfers', 'Standing Orders', 'Direct Debits'],
+    Cards: ['Cards', 'Card Controls', 'Disputes', 'Rewards'],
+    Lending: ['Loans', 'Mortgages', 'Credit Score', 'Overdrafts'],
+    Markets: ['FX Rates', 'Investments', 'Pensions', 'Savings'],
+    Identity: ['Customers', 'Consents', 'KYC', 'Notifications'],
+  };
+  // The tick (0 to 100) at which each ticket is deployed, and what holds the slow ones up.
+  const blockers = { 2: 'Reviewer on leave', 5: 'Change freeze', 7: 'Pipeline failed', 10: 'Typo in origin', 13: 'Waiting for approval',
+                     14: 'Reviewer on leave', 17: 'Wildcard left in: *', 19: 'Change freeze', 21: 'Pipeline failed', 22: 'Waiting for approval', 23: 'Team at offsite' };
+  const fastDone = [30, 44, 0, 36, 48, 0, 40, 0, 26, 46, 0, 34, 42, 0, 0, 38, 50, 0, 32, 0, 28, 0, 0, 0];
+  const slowDone = [0, 0, 74, 0, 0, 86, 0, 68, 0, 0, 80, 0, 0, 92, 71, 0, 0, 96, 0, 83, 0, 77, 89, 94];
+
+  async function tickets() {
+    const cols = document.getElementById('cols');
+    const cards = [];
+    let n = 4100;
+    for (const [team, apis] of Object.entries(teams)) {
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.innerHTML = '<h3>' + team + '</h3>';
+      for (const api of apis) {
+        const tk = document.createElement('div');
+        tk.className = 'tk';
+        tk.innerHTML = '<div class="n">' + api + ' API</div><div class="id">CHG-' + (++n) + ' · allow NovaPay origin</div><span class="chip">Ticket raised</span>';
+        col.appendChild(tk);
+        cards.push(tk);
+      }
+      cols.appendChild(col);
+    }
+    const ct = document.getElementById('ct'), cn = document.getElementById('cn'), clock = document.getElementById('clock');
+    const times = [[0, 'Fri 16:10'], [12, 'Fri 17:45'], [24, 'Sat'], [34, 'Sun'], [44, 'Mon 08:15'], [52, 'Mon 09:00'], [64, 'Tue 11:20'], [78, 'Wed 14:05'], [92, 'Thu 15:30']];
+    const set = (i, cls, text) => { cards[i].className = 'tk ' + cls; cards[i].querySelector('.chip').textContent = text; };
+    await sleep(900);
+    for (let tick = 0; tick <= 100; tick++) {
+      let done = 0;
+      cards.forEach((_, i) => {
+        const at = fastDone[i] || slowDone[i];
+        if (tick >= at) { set(i, 'done', 'Deployed'); done++; }
+        else if (blockers[i] && tick >= 22) set(i, 'stuck', blockers[i]);
+        else if (tick >= 14) set(i, 's2', 'In review');
+        else if (tick >= 5) set(i, 's1', 'Pull request open');
+      });
+      const label = times.filter(([t]) => t <= tick).pop()[1];
+      ct.textContent = label;
+      cn.textContent = done + ' of 24 APIs updated';
+      if (tick === 52) {
+        clock.classList.add('late');
+        document.getElementById('vb').className = 'big red';
+        document.getElementById('vb').textContent = 'Monday 09:00. Launch time.';
+        document.getElementById('vs').textContent = done + ' of 24 APIs are ready. NovaPay’s customers see errors.';
+        document.getElementById('verdict').classList.add('in');
+        await sleep(3600);
+      }
+      await sleep(tick < 52 ? 105 : 70);
+    }
+    document.getElementById('vb').textContent = 'Thursday. Three days late.';
+    document.getElementById('vs').textContent = 'And the next shared change starts the same queue again.';
+  }
+
+  document.fonts.ready.then(() => {
+    if (scene === 'tickets') tickets();
+    else if (scene === 'friday') reveal(1700);
+    else if (scene === 'turn') reveal(2300);
+    else reveal(800);
+  });
+</script>
+</body>
+</html>

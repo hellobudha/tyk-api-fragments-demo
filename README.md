@@ -10,9 +10,19 @@ gets the chance to drift.
 
 ## Record the video
 
-`video/record.sh` records a 97-second walkthrough of the real Tyk Dashboard and Gateway. A
-partner's web app is blocked by four APIs, one Fragment is edited, all four APIs accept it, and a
-breaking edit is refused. Recorded videos are not kept in this repository.
+`video/record.sh` records a walkthrough of a little over two minutes. Recorded videos are not kept
+in this repository.
+
+The video tells the story at enterprise scale: 24 APIs owned by six teams (`video/scale.sh up`
+creates the extra 20 from the baseline Template). It has two kinds of footage:
+
+- **Story scenes** (`video/scenes/story.html`), styled after the Tyk 5.16 launch pages. A partner
+  launch is announced on Friday afternoon, one line of CORS configuration becomes 24 tickets,
+  reviews and deploys, and the Monday launch is missed. These scenes are an illustration of the
+  problem, not product footage.
+- **The real product**: the partner's web app blocked by all 24 APIs, the Fragments screen, one
+  edit, all 24 APIs connected, the *Shared configuration* marker inside an API, and a breaking
+  edit that the Dashboard refuses for all 24 APIs.
 
 Subtitles are not drawn into the picture. They are standalone files beside the video:
 `video/api-fragments-walkthrough.srt` and `.vtt`. The video has an empty band under the picture,
@@ -153,7 +163,7 @@ see the *Shared configuration* badge.
 | `apis/new/loans.json` | Everything the fourth team had to write. |
 | `demo/lib.sh` | The audit and the helpers. Read `audit()` to see how each column is measured. |
 | `partner-app/` | The partner's web page used in the video. It calls the four APIs from a real browser. |
-| `video/` | The storyboard and recorded steps for the walkthrough video, and `record.sh` to record it. |
+| `video/` | The story scenes, storyboard and recorded steps for the walkthrough video, `scale.sh` to grow the demo to 24 APIs, and `record.sh` to record it. |
 
 ## The Dashboard API calls the walkthrough uses
 
@@ -169,15 +179,16 @@ see the *Shared configuration* badge.
 
 ## Try the partner page yourself
 
-After Act 5, serve the partner page and open <http://novapay.localhost:5180>:
+After Act 5, serve the partner page and open <http://novapay.localhost:5180>. Add `?all` to the
+address after `./video/scale.sh up` to call all 24 APIs:
 
 ```bash
 python3 -m http.server 5180 --bind 127.0.0.1 --directory partner-app
 ```
 
-All four APIs are blocked by the browser. In the Dashboard, open **Assets > Fragments >
+Every API is blocked by the browser. In the Dashboard, open **Assets > Fragments >
 cors-browser-apps**, choose **Edit**, add `"http://novapay.localhost:5180"` to `allowedOrigins`
-on the **Configuration** tab and save. Reload the page and all four connect.
+on the **Configuration** tab and save. Reload the page and they all connect.
 
 ## Things to know before you use Fragments for real
 
