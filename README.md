@@ -10,10 +10,22 @@ gets the chance to drift.
 
 ## Record the video
 
-`video/record.sh` records a 97-second walkthrough of the real Tyk Dashboard and Gateway, with
-subtitles and no voiceover. A partner's web app is blocked by four APIs, one Fragment is edited,
-all four APIs accept it, and a breaking edit is refused. `video/story.tsv` holds the on-screen
-text and a narration script for each beat. Recorded videos are not kept in this repository.
+`video/record.sh` records a 97-second walkthrough of the real Tyk Dashboard and Gateway. A
+partner's web app is blocked by four APIs, one Fragment is edited, all four APIs accept it, and a
+breaking edit is refused. Recorded videos are not kept in this repository.
+
+Subtitles are not drawn into the picture. They are standalone files beside the video:
+`video/api-fragments-walkthrough.srt` and `.vtt`. The video has an empty band under the picture,
+and players draw the subtitles there, so they never cover the Dashboard.
+
+| To play it in | Do this |
+| --- | --- |
+| VLC, mpv, IINA | Open the `.mp4`. The `.srt` with the same name loads by itself. |
+| A browser | Run `python3 -m http.server --directory video` and open <http://localhost:8000/player.html>. |
+| YouTube, Vimeo, LinkedIn | Upload the `.mp4`, then upload the `.srt` or `.vtt` as its caption file. |
+
+`video/story.tsv` is the source for the title cards, the subtitles and a narration script for
+each beat.
 
 ## The problem
 

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tyk API Fragments walkthrough</title>
+<style>
+  body { margin: 0; background: #111318; display: grid; place-items: center; min-height: 100vh; }
+  video { width: min(100vw, 1280px); height: auto; }
+  video::cue { font: 26px/1.35 -apple-system, "Segoe UI", Inter, sans-serif; color: #fff; background: transparent; }
+</style>
+</head>
+<body>
+<!-- Open this page through a web server (python3 -m http.server --directory video), not as a file,
+     so the browser is allowed to load the subtitle track. -->
+<video src="api-fragments-walkthrough.mp4" controls>
+  <track kind="subtitles" src="api-fragments-walkthrough.vtt" srclang="en" label="English" default>
+</video>
+</body>
+</html>
