@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Act 5: a new API starts with the baseline and stays on it.
-. "$(dirname "$0")/lib.sh"; need_state
+. "$(dirname "$0")/lib.sh"; need_state; need_fragments
 
 act "Act 5: The fourth team"
 say "The Loans team ships its first API. A year ago they would have copied a block from the wiki,
@@ -20,7 +20,7 @@ if [ "$(status)" != 200 ]; then
   dash POST "/api/apis/oas?templateID=meridian-api-baseline" --data-binary "@$ROOT/apis/new/loans.json" | jq -c '{Status, Message}'
 fi
 wait_for curl -fsS "$GW/loans/health"
-until [ "$(security_headers loans)" = 3 ]; do sleep 0.5; done
+wait_until "the Loans API to load" '[ "$(security_headers loans)" = 3 ]'
 pause
 
 say "The new API holds references, not copies, so it follows the platform team from its first request.

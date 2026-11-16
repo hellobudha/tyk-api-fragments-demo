@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Act 3: one change to one fragment reaches every API.
-. "$(dirname "$0")/lib.sh"; need_state
+. "$(dirname "$0")/lib.sh"; need_state; need_fragments
 
 act "Act 3: Friday, 4pm"
 say "Meridian signs NovaPay, a partner whose web app must call Meridian APIs from the browser.
@@ -20,7 +20,7 @@ jq --arg o "$PARTNER_ORIGIN" '.data.allowedOrigins += [$o] | .data.allowedOrigin
 show "curl -X PUT $DASH/api/assets/cors-browser-apps -d '{... \"allowedOrigins\": [\"$APP_ORIGIN\", \"$PARTNER_ORIGIN\"] ...}'"
 dash PUT /api/assets/cors-browser-apps --data-binary "@$STATE/cors-with-partner.json" | jq -c '{Status, Message}'
 [ "$(status)" = 200 ] || exit 1
-for api in "${APIS[@]}"; do until cors_allows "$api" "$PARTNER_ORIGIN"; do sleep 0.5; done; done
+for api in "${APIS[@]}"; do wait_until "$api to allow the partner" "cors_allows $api $PARTNER_ORIGIN"; done
 pause
 
 say "One request. Tyk checked every API that uses the fragment, saved it, and reloaded the Gateway."

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Start the stack, create an organisation and an admin user, and load the three "before" APIs.
 . "$(dirname "$0")/lib.sh"
+need_tools
+[ -f "$ROOT/.env" ] && [ -n "${TYK_LICENSE_KEY:-}" ] || {
+  bad "No licence found. Copy .env.example to .env and set TYK_LICENSE_KEY (trial: https://tyk.io/self-managed-trial/)."; exit 1; }
 mkdir -p "$STATE"
 ADMIN_SECRET=admin-secret
 
@@ -42,6 +45,7 @@ for asset in meridian-api-baseline cors-browser-apps rate-limit-standard securit
   dash DELETE "/api/assets/$asset" >/dev/null
 done
 for api in "${APIS[@]}"; do wait_for curl -fsS "$GW/$api/health"; done
-until cors_allows payments "$ROGUE_ORIGIN" && [ "$(security_headers cards)" = 0 ] && ! curl -fsS -o /dev/null "$GW/loans/health"; do sleep 0.5; done
+wait_until "the Gateway to load the three APIs" \
+  'cors_allows payments "$ROGUE_ORIGIN" && [ "$(security_headers cards)" = 0 ] && ! curl -fsS -o /dev/null "$GW/loans/health"'
 
 say "Ready. Dashboard login is in ${B}.demo/login.txt${N}. Next: ${B}./demo/01-the-drift.sh${N}"

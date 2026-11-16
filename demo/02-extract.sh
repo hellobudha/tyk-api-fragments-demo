@@ -25,7 +25,7 @@ for api in "${APIS[@]}"; do
   dash PUT "/api/apis/oas/$api-api" --data-binary "@$ROOT/apis/after/$api.json" >/dev/null
   [ "$(status)" = 200 ] && ok "$api-api now references 3 fragments" || { bad "$api: $(cat "$STATE/body")"; exit 1; }
 done
-until [ "$(security_headers cards)" = 3 ] && ! cors_allows payments "$ROGUE_ORIGIN"; do sleep 0.5; done
+wait_until "the Gateway to reload the APIs" '[ "$(security_headers cards)" = 3 ] && ! cors_allows payments "$ROGUE_ORIGIN"'
 pause
 
 say "The Dashboard stores the reference. The Gateway never sees one: it receives the finished definition."

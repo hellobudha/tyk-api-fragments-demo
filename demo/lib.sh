@@ -27,6 +27,7 @@ pause() { [ "${DEMO_AUTO:-}" = 1 ] || { printf '\n%s[enter to continue]%s' "$D" 
 need_state() {
   [ -f "$STATE/dashboard.env" ] || { bad "Run ./demo/00-setup.sh first."; exit 1; }
   . "$STATE/dashboard.env"
+  curl -fsS -o /dev/null "$DASH/hello" 2>/dev/null || { bad "Tyk Dashboard is not answering at $DASH. Run ./demo/00-setup.sh."; exit 1; }
 }
 
 # dash METHOD PATH [curl args...] -> body on stdout, HTTP status in $STATE/status
@@ -42,9 +43,28 @@ status() { cat "$STATE/status"; }
 wait_for() {
   local tries=0
   until "$@" >/dev/null 2>&1; do
-    tries=$((tries + 1)); [ $tries -gt 40 ] && { bad "Timed out waiting for: $*"; return 1; }
+    tries=$((tries + 1)); [ $tries -gt 120 ] && { bad "Timed out after 60s waiting for: $*"; exit 1; }
     sleep 0.5
   done
+}
+# wait_until "what we are waiting for" 'shell condition' -> gives up after 60 seconds instead of hanging
+wait_until() {
+  local tries=0
+  until eval "$2" >/dev/null 2>&1; do
+    tries=$((tries + 1))
+    [ $tries -gt 120 ] && { bad "Timed out after 60s waiting for $1. Check: docker compose logs gateway dashboard"; exit 1; }
+    sleep 0.5
+  done
+}
+
+need_tools() {
+  local t
+  for t in docker curl jq; do command -v "$t" >/dev/null || { bad "This walkthrough needs '$t' on your PATH."; exit 1; }; done
+  docker info >/dev/null 2>&1 || { bad "Docker is not running."; exit 1; }
+}
+# Acts 3 to 5 build on Act 2: the APIs must already reference the Fragments.
+need_fragments() {
+  [ "$(shared_blocks accounts 2>/dev/null)" = 3 ] || { bad "The APIs do not use Fragments yet. Run ./demo/02-extract.sh first."; exit 1; }
 }
 
 APP_ORIGIN=https://app.meridian.example
@@ -88,5 +108,5 @@ burst() {
   for i in $(seq "$2"); do [ "$(curl -s -o /dev/null -w '%{http_code}' "$GW/$1/health")" = 200 ] && n=$((n + 1)); done
   echo "$n"
   # Let the rate-limit window clear so later checks are not answered with 429.
-  until curl -fsS -o /dev/null "$GW/$1/health"; do sleep 1; done
+  wait_until "the rate-limit window to clear" "curl -fsS -o /dev/null $GW/$1/health"
 }

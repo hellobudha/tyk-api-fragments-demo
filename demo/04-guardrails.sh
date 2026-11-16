@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Act 4: one change reaching every API is also one mistake reaching every API. Tyk checks first.
-. "$(dirname "$0")/lib.sh"; need_state
+. "$(dirname "$0")/lib.sh"; need_state; need_fragments
 
 act "Act 4: What if the one change is wrong?"
 say "Shared configuration has an obvious risk. If one edit reaches every API, one typo breaks every API.

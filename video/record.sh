@@ -4,7 +4,7 @@
 # in the directory you run this from), and the evidence-video toolkit in EVIDENCE_VIDEO_HOME.
 # Writes video/api-fragments-walkthrough.mp4 with .srt and .vtt subtitle files beside it.
 # usage: EVIDENCE_VIDEO_HOME=/path/to/tools/evidence-video ./video/record.sh <workdir>
-. "$(dirname "$0")/../demo/lib.sh"; need_state
+. "$(dirname "$0")/../demo/lib.sh"; need_state; need_fragments
 TOOLS="${EVIDENCE_VIDEO_HOME:?set EVIDENCE_VIDEO_HOME to the evidence-video toolkit}"
 WORK="${1:?usage: record.sh <workdir>}"; rm -rf "$WORK"; mkdir -p "$WORK"
 PARTNER=http://novapay.localhost:5180
@@ -14,7 +14,7 @@ dash PUT /api/assets/cors-browser-apps --data-binary "@$ROOT/fragments/cors-brow
 curl -fsS -o /dev/null "$PARTNER/" 2>/dev/null || { (cd "$ROOT/partner-app" && python3 -m http.server 5180 --bind 127.0.0.1 >/dev/null 2>&1 &); sleep 1; }
 curl -fsS -o /dev/null http://127.0.0.1:5181/story.html 2>/dev/null || { python3 -m http.server 5181 --bind 127.0.0.1 --directory "$ROOT/video/scenes" >/dev/null 2>&1 & sleep 1; }
 "$ROOT/video/scale.sh" up >/dev/null    # the video tells the story with 24 APIs across six teams
-while cors_allows accounts "$PARTNER" || cors_allows notifications "$PARTNER"; do sleep 0.5; done
+wait_until "the Fragment to return to its starting value" '! cors_allows accounts "$PARTNER" && ! cors_allows notifications "$PARTNER"'
 
 # The video is built without subtitle text. Subtitles go to standalone .srt and .vtt files.
 python3 "$ROOT/video/subtitles.py" strip "$ROOT/video/story.tsv" "$WORK/story.tsv"
