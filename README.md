@@ -10,22 +10,32 @@ gets the chance to drift.
 
 ## Record the video
 
-`video/record.sh` records a walkthrough of a little over two minutes. Page loads are cut out and shots are joined with short crossfades by `video/assemble.py`. Recorded videos are not kept
-in this repository.
+`video/record.sh` records a 1920x1080 walkthrough of about two and a half minutes. Recorded videos are not
+kept in this repository. It needs ffmpeg and Playwright with Chromium, nothing else.
 
-The video tells the story at enterprise scale: 24 APIs owned by six teams (`video/scale.sh up`
-creates the extra 20 from the baseline Template). It has two kinds of footage:
+The video starts where most teams are before Fragments exist: 24 APIs owned by six teams, each
+API with its own copy of the bank's CORS rules, and four of those copies quietly drifted.
 
-- **Story scenes** (`video/scenes/story.html`), styled after the Tyk 5.16 launch pages. A partner
-  launch is announced on Friday afternoon, one line of CORS configuration becomes 24 tickets,
-  reviews and deploys, and the Monday launch is missed. These scenes are an illustration of the
-  problem, not product footage.
-- **The real product**: the partner's web app blocked by all 24 APIs, the Fragments screen, one
-  edit, all 24 APIs connected, the *Shared configuration* marker inside an API, and a breaking
-  edit that the Dashboard refuses for all 24 APIs.
+1. **The request** (illustration). Friday afternoon, a partner must be live on Monday, and their
+   web app needs every API. It is one line of configuration, in 24 copies.
+2. **The pain, in the real product.** The partner's web app is refused by 23 APIs. The one that
+   answers, Payments, does so because its copy was opened to every website during an incident.
+   The API designer shows it: *Allowed origins: Allow all Origins*.
+3. **The cost of changing copies** (illustration). 24 tickets, reviews and deploys; some stall,
+   and the Monday launch is missed.
+4. **Adding a Fragment, in the real product.** The platform team creates `cors-browser-apps` in
+   **Assets > Fragments** and pastes in the standard. `tools/adopt-fragment.py` then swaps every
+   API's copy for a reference, and reports the four copies that had drifted. Its output is shown
+   live as it runs against the Dashboard.
+5. **One change.** The Fragment lists all 24 APIs. One edit adds the partner's origin, and the
+   partner's web app connects to all 24. Payments now follows the standard, and a breaking edit
+   is refused for all 24 APIs.
+
+`video/prepare.py` puts the stack into the starting state, so a recording always starts from no
+Fragments. Run `./demo/00-setup.sh` afterwards to return to the main walkthrough.
 
 Subtitles are not drawn into the picture. They are standalone files beside the video:
-`video/api-fragments-walkthrough.srt` and `.vtt`. The video has an empty band under the picture,
+`video/api-fragments-walkthrough.srt` and `.vtt`. The picture sits in the upper part of the 1920x1080 frame with an empty band under it,
 and players draw the subtitles there, so they never cover the Dashboard.
 
 | To play it in | Do this |
@@ -34,8 +44,7 @@ and players draw the subtitles there, so they never cover the Dashboard.
 | A browser | Run `python3 -m http.server --directory video` and open <http://localhost:8000/player.html>. |
 | YouTube, Vimeo, LinkedIn | Upload the `.mp4`, then upload the `.srt` or `.vtt` as its caption file. |
 
-`video/story.tsv` is the source for the title cards, the subtitles and a narration script for
-each beat.
+`video/story.tsv` is the source for the subtitles and has a narration script for each beat.
 
 ## The problem
 
@@ -162,8 +171,9 @@ see the *Shared configuration* badge.
 | `templates/` | The API Template that carries the references for new APIs. |
 | `apis/new/loans.json` | Everything the fourth team had to write. |
 | `demo/lib.sh` | The audit and the helpers. Read `audit()` to see how each column is measured. |
-| `partner-app/` | The partner's web page used in the video. It calls the four APIs from a real browser. |
-| `video/` | The story scenes, storyboard and recorded steps for the walkthrough video, `scale.sh` to grow the demo to 24 APIs, and `record.sh` to record it. |
+| `tools/adopt-fragment.py` | Moves existing APIs onto a Fragment: swaps each API's copy of a block for a reference, and reports which copies had drifted. `--dry-run` reports only. |
+| `partner-app/` | The partner's web page used in the video. It calls the APIs from a real browser. |
+| `video/` | The walkthrough video: `record.sh` records it, `prepare.py` sets the starting state, `steps.json` and `story.tsv` are the shot list and subtitles, `scenes/` holds the illustrated scenes, `record-web.mjs` and `assemble.py` record and edit. `scale.sh` grows the main demo to 24 APIs. |
 
 ## The Dashboard API calls the walkthrough uses
 
@@ -189,6 +199,22 @@ python3 -m http.server 5180 --bind 127.0.0.1 --directory partner-app
 Every API is blocked by the browser. In the Dashboard, open **Assets > Fragments >
 cors-browser-apps**, choose **Edit**, add `"http://novapay.localhost:5180"` to `allowedOrigins`
 on the **Configuration** tab and save. Reload the page and they all connect.
+
+## Moving your own APIs onto a Fragment
+
+Fragments start paying off when APIs you already run reference them. Create the Fragment, then
+point `tools/adopt-fragment.py` at the block it replaces. Run it with `--dry-run` first: it lists
+every API whose copy differs from the Fragment, which is usually the first time anyone sees the
+drift. Without `--dry-run`, it saves each API with a reference, and the Dashboard validates each
+one as it is saved.
+
+```bash
+TYK_DASHBOARD_URL=http://localhost:3100 TYK_DASHBOARD_KEY=<your API access key> \
+  tools/adopt-fragment.py --fragment cors-browser-apps --path x-tyk-api-gateway.middleware.global.cors --dry-run
+```
+
+Moving an API onto a Fragment changes its behaviour wherever its copy had drifted, which is the
+point, but review the dry run before you move APIs other teams own.
 
 ## Things to know before you use Fragments for real
 

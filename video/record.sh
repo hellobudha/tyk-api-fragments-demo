@@ -1,32 +1,34 @@
 #!/usr/bin/env bash
 # Record the walkthrough video against the running demo stack.
-# Needs: ffmpeg, python3 with Pillow, Playwright with Chromium (npm i -D playwright && npx playwright install chromium
-# in the directory you run this from), and the evidence-video toolkit in EVIDENCE_VIDEO_HOME.
+#
+# The video starts where most teams are today: 24 APIs, each with its own copy of the CORS rules, and
+# no Fragments. It creates the Fragment, moves the APIs onto it, and makes the partner launch one edit.
+#
+# Needs ffmpeg, and Playwright with Chromium installed in the directory you run this from:
+#   npm i -D playwright && npx playwright install chromium
+# usage: ./video/record.sh <workdir>
 # Writes video/api-fragments-walkthrough.mp4 with .srt and .vtt subtitle files beside it.
-# usage: EVIDENCE_VIDEO_HOME=/path/to/tools/evidence-video ./video/record.sh <workdir>
-. "$(dirname "$0")/../demo/lib.sh"; need_state; need_fragments
-TOOLS="${EVIDENCE_VIDEO_HOME:?set EVIDENCE_VIDEO_HOME to the evidence-video toolkit}"
+# Afterwards, run ./demo/00-setup.sh to return to the main walkthrough.
+. "$(dirname "$0")/../demo/lib.sh"; need_state
 WORK="${1:?usage: record.sh <workdir>}"; rm -rf "$WORK"; mkdir -p "$WORK"
+command -v ffmpeg >/dev/null || { bad "This needs ffmpeg."; exit 1; }
 PARTNER=http://novapay.localhost:5180
+export TYK_DASHBOARD_URL="$DASH" TYK_DASHBOARD_KEY="$DASH_KEY"
 
-# Off camera: put the Fragment back to its starting value and serve the partner page.
-dash PUT /api/assets/cors-browser-apps --data-binary "@$ROOT/fragments/cors-browser-apps.json" >/dev/null
-serve() {  # serve DIR PORT, detached so this script can exit while the server keeps running
-  curl -fsS -o /dev/null "http://127.0.0.1:$2/" 2>/dev/null && return
-  nohup python3 -m http.server "$2" --bind 127.0.0.1 --directory "$1" </dev/null >/dev/null 2>&1 &
-  disown; sleep 1
+# Off camera: the starting state, and the two local pages the video visits.
+python3 "$ROOT/video/prepare.py"
+serve() {  # serve NAME PORT COMMAND..., detached so this script can exit while the server keeps running
+  local name=$1 port=$2; shift 2
+  curl -fsS -o /dev/null "http://127.0.0.1:$port/$name" 2>/dev/null && return
+  curl -fsS -o /dev/null "http://127.0.0.1:$port/" 2>/dev/null && { bad "Port $port is busy with something else."; exit 1; }
+  nohup "$@" </dev/null >/dev/null 2>&1 & disown
+  wait_until "the server on port $port" "curl -fsS -o /dev/null http://127.0.0.1:$port/$name"
 }
-serve "$ROOT/partner-app" 5180
-serve "$ROOT/video/scenes" 5181
-"$ROOT/video/scale.sh" up >/dev/null    # the video tells the story with 24 APIs across six teams
-wait_until "the Fragment to return to its starting value" '! cors_allows accounts "$PARTNER" && ! cors_allows notifications "$PARTNER"'
+serve index.html 5180 python3 -m http.server 5180 --bind 127.0.0.1 --directory "$ROOT/partner-app"
+serve health 5181 python3 "$ROOT/video/scenes/server.py"
+wait_until "the starting state at the Gateway" '! cors_allows accounts "$PARTNER" && cors_allows payments "$PARTNER"'
 
-# The video is built without subtitle text. Subtitles go to standalone .srt and .vtt files.
-python3 "$ROOT/video/assemble.py" strip "$ROOT/video/story.tsv" "$WORK/story.tsv"
 DASH_EMAIL=platform@meridian.example DASH_PASSWORD="$(awk '/^Password/{print $2}' "$STATE/login.txt")" \
-  node "$TOOLS/record-web.mjs" "$ROOT/video/steps.json" "$WORK"
-python3 "$TOOLS/make_video.py" build "$WORK" --no-voice
-python3 "$TOOLS/make_video.py" verify "$WORK"
-
-# Join the segments with crossfades, add the subtitle band, and write the .srt and .vtt files.
-python3 "$ROOT/video/assemble.py" build "$ROOT/video/story.tsv" "$WORK" "$ROOT/video/api-fragments-walkthrough"
+  node "$ROOT/video/record-web.mjs" "$ROOT/video/steps.json" "$WORK"
+python3 "$ROOT/video/assemble.py" "$ROOT/video/story.tsv" "$WORK" "$ROOT/video/api-fragments-walkthrough"
+note "The stack now holds the video's end state. Run ./demo/00-setup.sh to return to the main walkthrough."

@@ -1,14 +1,19 @@
 # kind	name	seconds	line1	line2	spoken
-# Scenes (friday, tickets, turn, outro) are designed pages in video/scenes and carry their own text, so they have no subtitle.
-beat	friday				Friday, four p.m. A partner goes live Monday, and their web app needs access to every API. It is one line of configuration. In twenty-four APIs, owned by six teams.
-beat	tickets				So one line becomes twenty-four tickets, reviews and deploys. Some get stuck. Monday comes, and the launch is not ready. It lands on Thursday.
+# Every row is a recorded beat, in playback order. line1 and line2 become the subtitle; the designed scenes
+# (friday, tickets, turn, adopt, outro) carry their own on-screen text, so they have no subtitle.
+beat	friday				Friday, four p.m. A partner goes live Monday, and their web app needs every Meridian API. It is one line of CORS configuration, copied into twenty-four APIs owned by six teams.
+beat	blocked		NovaPay's web app calls all 24 Meridian APIs through Tyk Gateway: 23 refuse it	The one that answers, Payments, allows every website	The partner's web app is refused by twenty-three APIs. The one that answers, Payments, allows every website.
+beat	drift		Meridian runs 24 APIs, and each keeps its own copy of the CORS rules	No single place says what the rule is	Meridian runs twenty-four APIs, and each keeps its own copy of the rules. No single place says what the rule is.
+beat	drift-api		Payments' copy allows every website	It was opened up during an incident and never closed	Payments' copy allows every website. It was opened up during an incident, and nobody noticed.
+beat	tickets				So one line becomes twenty-four tickets, reviews and deploys. Some get stuck. Monday comes and the launch is not ready.
 beat	turn				The rule is the same in every API. So why is it stored twenty-four times? Tyk five sixteen adds API Fragments.
-beat	blocked		NovaPay's web app calls all 24 Meridian APIs through Tyk Gateway	The browser blocks every one: NovaPay is not an allowed origin	This is the partner's web app, calling all twenty-four APIs through Tyk Gateway. The browser blocks every one.
-beat	manager		Fragments have their own screen in Tyk Dashboard	Each one is a named piece of shared API configuration	Fragments have their own screen in the Dashboard, under Assets.
-beat	usage		The Fragment lists every API that uses it	24 APIs reference this one CORS policy	Each Fragment lists the APIs that reference it. Twenty-four APIs share this CORS policy.
-beat	edit		Add the partner's origin to the Fragment	One edit, one save	The platform team adds the partner's origin once, and saves.
-beat	allowed		Same page, reloaded	All 24 APIs now accept NovaPay. No API was edited or redeployed	Reload the partner app. All twenty-four APIs accept it. No API was edited or redeployed.
-beat	badge		API teams see what is shared, and which Fragment sets it	The setting is read-only inside the API	In each API, the shared setting is marked and read-only, with the Fragment that sets it.
-beat	guard		Now a mistake: a value of the wrong type	Tyk checks all 24 APIs first and refuses the save	Now a mistake: a value of the wrong type. Tyk checks every API that uses the Fragment and refuses the save.
-beat	still		Nothing was saved	The partner app still works	Nothing was saved, and the partner app still works.
-beat	outro				Twenty-four APIs, one edit, no tickets. Store shared configuration once, and Tyk refuses a change that would break the APIs that use it.
+beat	create		Tyk 5.16: create a Fragment and paste in the bank's CORS standard	It is stored once, under Assets in Tyk Dashboard	The platform team creates a Fragment and pastes in the bank's CORS standard, once.
+beat	name		Name it. APIs will point at it as fragment://cors-browser-apps	Saved. No API uses it yet	They name it and save it. No API uses it yet.
+beat	adopt				Each API swaps its own copy for a one-line reference. Four copies had drifted, including Payments; now they follow the standard.
+beat	usage		All 24 APIs now reference the one Fragment	And the Dashboard lists every API that uses it	All twenty-four APIs now reference one Fragment, and the Dashboard lists every one of them.
+beat	edit		Monday's launch: add NovaPay's origin to the Fragment	One edit, one save	Now the partner launch: add NovaPay's origin to the Fragment. One edit, one save.
+beat	allowed		The same page, reloaded: all 24 APIs accept NovaPay	No API was edited or redeployed	Reload the partner app. All twenty-four APIs accept it. No API was edited or redeployed.
+beat	badge					
+beat	badge-api		Payments now follows the standard: the wildcard is gone	The setting is read-only in the API and names its Fragment	Payments now follows the standard, the wildcard is gone, and the API shows where the setting comes from.
+beat	guard		A mistake: a value of the wrong type	Tyk checks all 24 APIs first and refuses the save	A mistake: a value of the wrong type. Tyk checks every API that uses the Fragment, and refuses the save.
+beat	outro				Twenty-four copies became one Fragment. Four drifted APIs are back in line, and the partner launched with one edit.

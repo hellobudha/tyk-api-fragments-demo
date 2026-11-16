@@ -4,8 +4,11 @@
   "width": 1280,
   "height": 720
  },
- "slowMo": 120,
- "headless": true,
+ "scale": 1.5,
+ "slowMo": 110,
+ "clipboardOrigins": [
+  "http://localhost:3100"
+ ],
  "setup": [
   {
    "do": "goto",
@@ -33,11 +36,7 @@
  "steps": [
   {
    "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=friday"
-  },
-  {
-   "do": "pause",
-   "seconds": 0.3,
+   "url": "http://127.0.0.1:5181/story.html?scene=friday",
    "beat": "friday"
   },
   {
@@ -51,42 +50,6 @@
   },
   {
    "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=tickets"
-  },
-  {
-   "do": "pause",
-   "seconds": 0.3,
-   "beat": "tickets"
-  },
-  {
-   "do": "pause",
-   "seconds": 16.5
-  },
-  {
-   "do": "pause",
-   "seconds": 0.05,
-   "beat": "cut2"
-  },
-  {
-   "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=turn"
-  },
-  {
-   "do": "pause",
-   "seconds": 0.3,
-   "beat": "turn"
-  },
-  {
-   "do": "pause",
-   "seconds": 7.5
-  },
-  {
-   "do": "pause",
-   "seconds": 0.05,
-   "beat": "cut3"
-  },
-  {
-   "do": "goto",
    "url": "http://novapay.localhost:5180/?all"
   },
   {
@@ -96,23 +59,95 @@
   },
   {
    "do": "expect",
-   "text": "0 of 24 APIs reachable"
+   "text": "1 of 24 APIs reachable"
   },
   {
-   "do": "hover",
-   "target": "#banner"
-  },
-  {
-   "do": "eval",
-   "js": "(() => { const sel = \"#banner\", txt = \"\", ms = 3000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
-  },
-  {
-   "do": "pause",
+   "do": "highlight",
+   "target": "#banner",
    "seconds": 3
   },
   {
+   "do": "highlight",
+   "target": ".api:has-text(\"Payments API\")",
+   "seconds": 3.5
+  },
+  {
    "do": "pause",
+   "seconds": 0.5
+  },
+  {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut2"
+  },
+  {
+   "do": "goto",
+   "url": "/apis"
+  },
+  {
+   "do": "waitFor",
+   "target": "input[placeholder=\"Search by name\"]"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
+   "beat": "drift"
+  },
+  {
+   "do": "highlight",
+   "target": "text=Total APIs >> xpath=..",
+   "seconds": 3.5
+  },
+  {
+   "do": "pause",
+   "seconds": 0.5
+  },
+  {
+   "do": "type",
+   "target": "input[placeholder=\"Search by name\"]",
+   "text": "Payments",
+   "delay": 70
+  },
+  {
+   "do": "click",
+   "target": "span.entity-name:has-text(\"Payments API\")",
+   "beat": "cut101"
+  },
+  {
+   "do": "waitFor",
+   "target": "text=Allowed origins"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.4,
+   "beat": "drift-api"
+  },
+  {
+   "do": "scroll",
+   "target": "text=Allow all Origins"
+  },
+  {
+   "do": "highlight",
+   "target": "text=Allow all Origins",
    "seconds": 4
+  },
+  {
+   "do": "pause",
+   "seconds": 1
+  },
+  {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut3"
+  },
+  {
+   "do": "goto",
+   "url": "http://127.0.0.1:5181/story.html?scene=tickets",
+   "beat": "tickets"
+  },
+  {
+   "do": "pause",
+   "seconds": 16.5
   },
   {
    "do": "pause",
@@ -121,41 +156,117 @@
   },
   {
    "do": "goto",
-   "url": "/"
+   "url": "http://127.0.0.1:5181/story.html?scene=turn",
+   "beat": "turn"
   },
   {
-   "do": "waitFor",
-   "target": "text=Welcome to your API dashboard"
+   "do": "pause",
+   "seconds": 7
   },
   {
-   "do": "click",
-   "target": "a[href=\"/fragments\"]",
-   "beat": "manager"
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut5"
+  },
+  {
+   "do": "goto",
+   "url": "/fragments"
   },
   {
    "do": "expect",
-   "text": "cors-browser-apps"
+   "text": "No fragments yet"
   },
   {
-   "do": "hover",
-   "target": "tr:has-text(\"cors-browser-apps\")"
+   "do": "pause",
+   "seconds": 0.3,
+   "beat": "create"
   },
   {
-   "do": "eval",
-   "js": "(() => { const sel = \"tr\", txt = \"cors-browser-apps\", ms = 3000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+   "do": "pause",
+   "seconds": 1.5
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Add Fragment\")"
+  },
+  {
+   "do": "waitFor",
+   "target": ".monaco-editor .view-lines"
+  },
+  {
+   "do": "click",
+   "target": ".monaco-editor .view-lines"
+  },
+  {
+   "do": "paste",
+   "file": "../fragments/cors-browser-apps.json",
+   "field": "data"
   },
   {
    "do": "pause",
    "seconds": 3
   },
   {
+   "do": "click",
+   "target": "button:visible:has-text(\"Continue\")",
+   "beat": "name"
+  },
+  {
+   "do": "type",
+   "target": "input[name=name]",
+   "text": "cors-browser-apps",
+   "delay": 55
+  },
+  {
+   "do": "type",
+   "target": "input[name=description]",
+   "text": "Meridian's CORS standard for browser apps",
+   "delay": 25
+  },
+  {
    "do": "pause",
-   "seconds": 2
+   "seconds": 0.8
   },
   {
    "do": "click",
-   "target": "td:has-text(\"cors-browser-apps\")",
-   "beat": "usage"
+   "target": "button:visible:has-text(\"Save Fragment\")"
+  },
+  {
+   "do": "expect",
+   "text": "Fragment created"
+  },
+  {
+   "do": "highlight",
+   "target": "tr:has-text(\"cors-browser-apps\")",
+   "seconds": 3
+  },
+  {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut6"
+  },
+  {
+   "do": "goto",
+   "url": "http://127.0.0.1:5181/adopt.html",
+   "beat": "adopt"
+  },
+  {
+   "do": "expect",
+   "text": "now reference cors-browser-apps",
+   "timeout": 90000
+  },
+  {
+   "do": "pause",
+   "seconds": 4.5
+  },
+  {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut7"
+  },
+  {
+   "do": "goto",
+   "url": "/fragments/cors-browser-apps"
   },
   {
    "do": "expect",
@@ -163,27 +274,17 @@
   },
   {
    "do": "pause",
-   "seconds": 2
-  },
-  {
-   "do": "hover",
-   "target": "text=APIs using this fragment (24)"
+   "seconds": 0.3,
+   "beat": "usage"
   },
   {
    "do": "scroll",
-   "y": 330
+   "target": "text=APIs using this fragment (24)"
   },
   {
-   "do": "hover",
-   "target": "table:has-text(\"accounts-api\")"
-  },
-  {
-   "do": "eval",
-   "js": "(() => { const sel = \"table\", txt = \"accounts-api\", ms = 4000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
-  },
-  {
-   "do": "pause",
-   "seconds": 4
+   "do": "highlight",
+   "target": "text=APIs using this fragment (24)",
+   "seconds": 3.5
   },
   {
    "do": "pause",
@@ -204,7 +305,7 @@
   },
   {
    "do": "pause",
-   "seconds": 1
+   "seconds": 0.6
   },
   {
    "do": "click",
@@ -348,20 +449,24 @@
   },
   {
    "do": "pause",
-   "seconds": 3
+   "seconds": 2
   },
   {
    "do": "click",
    "target": "button:visible:has-text(\"Save Fragment\")"
   },
   {
+   "do": "expect",
+   "text": "Fragment saved"
+  },
+  {
    "do": "pause",
-   "seconds": 7
+   "seconds": 2.5
   },
   {
    "do": "pause",
    "seconds": 0.05,
-   "beat": "cut5"
+   "beat": "cut8"
   },
   {
    "do": "goto",
@@ -377,12 +482,9 @@
    "text": "24 of 24 APIs reachable"
   },
   {
-   "do": "hover",
-   "target": "#banner"
-  },
-  {
-   "do": "eval",
-   "js": "(() => { const sel = \"#banner\", txt = \"\", ms = 3000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+   "do": "highlight",
+   "target": "#banner",
+   "seconds": 3
   },
   {
    "do": "pause",
@@ -390,58 +492,59 @@
   },
   {
    "do": "pause",
-   "seconds": 4
-  },
-  {
-   "do": "pause",
    "seconds": 0.05,
-   "beat": "cut6"
+   "beat": "cut9"
   },
   {
    "do": "goto",
    "url": "/apis"
   },
   {
-   "do": "expect",
-   "text": "Savings API"
+   "do": "waitFor",
+   "target": "input[placeholder=\"Search by name\"]"
   },
   {
    "do": "pause",
-   "seconds": 1.5,
+   "seconds": 0.3,
    "beat": "badge"
   },
   {
+   "do": "type",
+   "target": "input[placeholder=\"Search by name\"]",
+   "text": "Payments",
+   "delay": 70
+  },
+  {
    "do": "click",
-   "target": "text=Savings API"
+   "target": "span.entity-name:has-text(\"Payments API\")",
+   "beat": "cut102"
   },
   {
    "do": "waitFor",
-   "target": "text=Set by cors-browser-apps"
+   "target": "text=Allowed origins"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.4,
+   "beat": "badge-api"
   },
   {
    "do": "scroll",
-   "target": "text=Set by cors-browser-apps"
+   "target": "text=novapay.localhost:5180"
   },
   {
-   "do": "hover",
-   "target": "text=Set by cors-browser-apps"
-  },
-  {
-   "do": "eval",
-   "js": "(() => { const sel = \"*\", txt = \"Set by cors-browser-apps\", ms = 4000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+   "do": "highlight",
+   "target": "text=novapay.localhost:5180",
+   "seconds": 3.5
   },
   {
    "do": "pause",
-   "seconds": 4
-  },
-  {
-   "do": "pause",
-   "seconds": 2
+   "seconds": 1
   },
   {
    "do": "pause",
    "seconds": 0.05,
-   "beat": "cut7"
+   "beat": "cut10"
   },
   {
    "do": "goto",
@@ -452,9 +555,13 @@
    "target": "button:visible:has-text(\"Edit\")"
   },
   {
-   "do": "click",
-   "target": "button:visible:has-text(\"Edit\")",
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "guard"
+  },
+  {
+   "do": "click",
+   "target": "button:visible:has-text(\"Edit\")"
   },
   {
    "do": "click",
@@ -518,7 +625,7 @@
   },
   {
    "do": "pause",
-   "seconds": 2
+   "seconds": 1.5
   },
   {
    "do": "click",
@@ -529,55 +636,22 @@
    "text": "nothing was saved"
   },
   {
-   "do": "hover",
-   "target": "text=nothing was saved"
-  },
-  {
-   "do": "eval",
-   "js": "(() => { const sel = \"*\", txt = \"nothing was saved\", ms = 4000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
-  },
-  {
-   "do": "pause",
+   "do": "highlight",
+   "target": "text=nothing was saved",
    "seconds": 4
   },
   {
    "do": "pause",
-   "seconds": 4
+   "seconds": 1.5
   },
   {
    "do": "pause",
    "seconds": 0.05,
-   "beat": "cut8"
+   "beat": "cut11"
   },
   {
    "do": "goto",
-   "url": "http://novapay.localhost:5180/?all"
-  },
-  {
-   "do": "pause",
-   "seconds": 0.3,
-   "beat": "still"
-  },
-  {
-   "do": "expect",
-   "text": "24 of 24 APIs reachable"
-  },
-  {
-   "do": "pause",
-   "seconds": 5
-  },
-  {
-   "do": "pause",
-   "seconds": 0.05,
-   "beat": "cut9"
-  },
-  {
-   "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=outro"
-  },
-  {
-   "do": "pause",
-   "seconds": 0.3,
+   "url": "http://127.0.0.1:5181/story.html?scene=outro",
    "beat": "outro"
   },
   {
