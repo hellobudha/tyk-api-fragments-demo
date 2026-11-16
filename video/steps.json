@@ -33,7 +33,11 @@
  "steps": [
   {
    "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=friday",
+   "url": "http://127.0.0.1:5181/story.html?scene=friday"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "friday"
   },
   {
@@ -41,8 +45,17 @@
    "seconds": 10.5
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut1"
+  },
+  {
    "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=tickets",
+   "url": "http://127.0.0.1:5181/story.html?scene=tickets"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "tickets"
   },
   {
@@ -50,8 +63,17 @@
    "seconds": 16.5
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut2"
+  },
+  {
    "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=turn",
+   "url": "http://127.0.0.1:5181/story.html?scene=turn"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "turn"
   },
   {
@@ -59,8 +81,17 @@
    "seconds": 7.5
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut3"
+  },
+  {
    "do": "goto",
-   "url": "http://novapay.localhost:5180/?all",
+   "url": "http://novapay.localhost:5180/?all"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "blocked"
   },
   {
@@ -68,8 +99,15 @@
    "text": "0 of 24 APIs reachable"
   },
   {
-   "do": "highlight",
-   "target": "#banner",
+   "do": "hover",
+   "target": "#banner"
+  },
+  {
+   "do": "eval",
+   "js": "(() => { const sel = \"#banner\", txt = \"\", ms = 3000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+  },
+  {
+   "do": "pause",
    "seconds": 3
   },
   {
@@ -77,21 +115,37 @@
    "seconds": 4
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut4"
+  },
+  {
    "do": "goto",
-   "url": "/",
-   "beat": "manager"
+   "url": "/"
+  },
+  {
+   "do": "waitFor",
+   "target": "text=Welcome to your API dashboard"
   },
   {
    "do": "click",
-   "target": "a[href=\"/fragments\"]"
+   "target": "a[href=\"/fragments\"]",
+   "beat": "manager"
   },
   {
    "do": "expect",
    "text": "cors-browser-apps"
   },
   {
-   "do": "highlight",
-   "target": "tr:has-text(\"cors-browser-apps\")",
+   "do": "hover",
+   "target": "tr:has-text(\"cors-browser-apps\")"
+  },
+  {
+   "do": "eval",
+   "js": "(() => { const sel = \"tr\", txt = \"cors-browser-apps\", ms = 3000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+  },
+  {
+   "do": "pause",
    "seconds": 3
   },
   {
@@ -120,8 +174,15 @@
    "y": 330
   },
   {
-   "do": "highlight",
-   "target": "table:has-text(\"accounts-api\")",
+   "do": "hover",
+   "target": "table:has-text(\"accounts-api\")"
+  },
+  {
+   "do": "eval",
+   "js": "(() => { const sel = \"table\", txt = \"accounts-api\", ms = 4000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+  },
+  {
+   "do": "pause",
    "seconds": 4
   },
   {
@@ -298,8 +359,17 @@
    "seconds": 7
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut5"
+  },
+  {
    "do": "goto",
-   "url": "http://novapay.localhost:5180/?all",
+   "url": "http://novapay.localhost:5180/?all"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "allowed"
   },
   {
@@ -307,8 +377,15 @@
    "text": "24 of 24 APIs reachable"
   },
   {
-   "do": "highlight",
-   "target": "#banner",
+   "do": "hover",
+   "target": "#banner"
+  },
+  {
+   "do": "eval",
+   "js": "(() => { const sel = \"#banner\", txt = \"\", ms = 3000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+  },
+  {
+   "do": "pause",
    "seconds": 3
   },
   {
@@ -316,9 +393,13 @@
    "seconds": 4
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut6"
+  },
+  {
    "do": "goto",
-   "url": "/apis",
-   "beat": "badge"
+   "url": "/apis"
   },
   {
    "do": "expect",
@@ -326,7 +407,8 @@
   },
   {
    "do": "pause",
-   "seconds": 1.5
+   "seconds": 1.5,
+   "beat": "badge"
   },
   {
    "do": "click",
@@ -341,8 +423,15 @@
    "target": "text=Set by cors-browser-apps"
   },
   {
-   "do": "highlight",
-   "target": "text=Set by cors-browser-apps",
+   "do": "hover",
+   "target": "text=Set by cors-browser-apps"
+  },
+  {
+   "do": "eval",
+   "js": "(() => { const sel = \"*\", txt = \"Set by cors-browser-apps\", ms = 4000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+  },
+  {
+   "do": "pause",
    "seconds": 4
   },
   {
@@ -350,13 +439,22 @@
    "seconds": 2
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut7"
+  },
+  {
    "do": "goto",
-   "url": "/fragments/cors-browser-apps",
-   "beat": "guard"
+   "url": "/fragments/cors-browser-apps"
+  },
+  {
+   "do": "waitFor",
+   "target": "button:visible:has-text(\"Edit\")"
   },
   {
    "do": "click",
-   "target": "button:visible:has-text(\"Edit\")"
+   "target": "button:visible:has-text(\"Edit\")",
+   "beat": "guard"
   },
   {
    "do": "click",
@@ -431,8 +529,15 @@
    "text": "nothing was saved"
   },
   {
-   "do": "highlight",
-   "target": "text=nothing was saved",
+   "do": "hover",
+   "target": "text=nothing was saved"
+  },
+  {
+   "do": "eval",
+   "js": "(() => { const sel = \"*\", txt = \"nothing was saved\", ms = 4000;\n  let els = [...document.querySelectorAll(sel)];\n  if (txt) { els = els.filter((e) => (e.innerText || '').includes(txt));\n             els = els.filter((e) => ![...e.children].some((c) => (c.innerText || '').includes(txt) && c.matches(sel))); }\n  const el = els[0]; if (!el) throw new Error('highlight target not found: ' + sel + ' ' + txt);\n  const r = el.getBoundingClientRect(), h = document.createElement('div');\n  h.style.cssText = 'position:fixed;z-index:2147483646;pointer-events:none;border:3px solid #23E2C2;border-radius:10px;' +\n    'box-shadow:0 0 0 9999px rgba(3,3,28,.2),0 0 22px rgba(35,226,194,.55);opacity:0;transition:opacity .4s ease;' +\n    'left:' + (r.left - 7) + 'px;top:' + (r.top - 7) + 'px;width:' + (r.width + 14) + 'px;height:' + (r.height + 14) + 'px';\n  document.body.appendChild(h); requestAnimationFrame(() => { h.style.opacity = 1; });\n  setTimeout(() => { h.style.opacity = 0; }, ms - 450); setTimeout(() => h.remove(), ms); return 'highlight ' + (txt || sel); })()"
+  },
+  {
+   "do": "pause",
    "seconds": 4
   },
   {
@@ -440,8 +545,17 @@
    "seconds": 4
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut8"
+  },
+  {
    "do": "goto",
-   "url": "http://novapay.localhost:5180/?all",
+   "url": "http://novapay.localhost:5180/?all"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "still"
   },
   {
@@ -453,8 +567,17 @@
    "seconds": 5
   },
   {
+   "do": "pause",
+   "seconds": 0.05,
+   "beat": "cut9"
+  },
+  {
    "do": "goto",
-   "url": "http://127.0.0.1:5181/story.html?scene=outro",
+   "url": "http://127.0.0.1:5181/story.html?scene=outro"
+  },
+  {
+   "do": "pause",
+   "seconds": 0.3,
    "beat": "outro"
   },
   {

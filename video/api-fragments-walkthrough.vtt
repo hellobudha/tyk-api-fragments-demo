@@ -1,34 +1,34 @@
 WEBVTT
 
-00:00:35.867 --> 00:00:45.634
+00:00:35.300 --> 00:00:44.833
 NovaPay's web app calls all 24 Meridian APIs through Tyk Gateway
 The browser blocks every one: NovaPay is not an allowed origin
 
-00:00:46.133 --> 00:00:52.800
+00:00:45.433 --> 00:00:51.099
 Fragments have their own screen in Tyk Dashboard
 Each one is a named piece of shared API configuration
 
-00:00:53.300 --> 00:01:02.100
+00:00:52.099 --> 00:01:00.366
 The Fragment lists every API that uses it
 24 APIs reference this one CORS policy
 
-00:01:02.600 --> 00:01:20.467
+00:01:01.366 --> 00:01:18.599
 Add the partner's origin to the Fragment
 One edit, one save
 
-00:01:20.967 --> 00:01:30.734
+00:01:19.199 --> 00:01:28.732
 Same page, reloaded
 All 24 APIs now accept NovaPay. No API was edited or redeployed
 
-00:01:31.233 --> 00:01:40.900
+00:01:29.332 --> 00:01:37.999
 API teams see what is shared, and which Fragment sets it
 The setting is read-only inside the API
 
-00:01:41.400 --> 00:01:56.333
+00:01:38.599 --> 00:01:52.866
 Now a mistake: a value of the wrong type
 Tyk checks all 24 APIs first and refuses the save
 
-00:01:56.833 --> 00:02:04.033
+00:01:53.466 --> 00:02:00.266
 Nothing was saved
 The partner app still works
 

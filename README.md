@@ -10,7 +10,7 @@ gets the chance to drift.
 
 ## Record the video
 
-`video/record.sh` records a walkthrough of a little over two minutes. Recorded videos are not kept
+`video/record.sh` records a walkthrough of a little over two minutes. Page loads are cut out and shots are joined with short crossfades by `video/assemble.py`. Recorded videos are not kept
 in this repository.
 
 The video tells the story at enterprise scale: 24 APIs owned by six teams (`video/scale.sh up`
