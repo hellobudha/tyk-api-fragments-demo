@@ -11,7 +11,20 @@ gets the chance to drift.
 ## Record the video
 
 `video/record.sh` records a 1920x1080 walkthrough of about two and a half minutes. Recorded videos are not
-kept in this repository. It needs ffmpeg and Playwright with Chromium, nothing else.
+kept in this repository, so record your own. Everything it uses is in this repository. On top of
+what the walkthrough needs (see [Run it](#run-it)), it needs ffmpeg, Python 3 and Node.js, with
+Playwright and Chromium installed in the directory you run it from:
+
+```bash
+npm i -D playwright && npx playwright install chromium
+```
+
+Start the stack with `./demo/00-setup.sh` first, then record into a scratch directory of your
+choice. The script deletes and recreates that directory, so do not point it at anything you want to keep:
+
+```bash
+./video/record.sh /tmp/fragments-video
+```
 
 The video starts where most teams are before Fragments exist: 24 APIs owned by six teams, each
 API with its own copy of the bank's CORS rules, and four of those copies quietly drifted.
@@ -123,9 +136,11 @@ Fragment.
 
 ## Run it
 
-You need Docker, `curl`, `jq`, and a Tyk Dashboard licence. Fragments are a Dashboard feature, and
-the Dashboard is a licensed product. A free trial licence is available at
-<https://tyk.io/self-managed-trial/>.
+Everything runs from this repository. Tyk itself runs in Docker, so there is nothing else to
+install. You need Docker (running), `curl`, `jq`, `openssl`, and a Tyk Dashboard licence. Fragments
+are a Dashboard feature, and the Dashboard is a licensed product. A free trial licence is available
+at <https://tyk.io/self-managed-trial/>. The first run downloads the Tyk Dashboard, Tyk Gateway,
+Postgres, Redis and Node images from Docker Hub.
 
 ```bash
 cp .env.example .env

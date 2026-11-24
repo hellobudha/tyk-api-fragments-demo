@@ -11,7 +11,7 @@
 # Afterwards, run ./demo/00-setup.sh to return to the main walkthrough.
 . "$(dirname "$0")/../demo/lib.sh"; need_state
 WORK="${1:?usage: record.sh <workdir>}"; rm -rf "$WORK"; mkdir -p "$WORK"
-command -v ffmpeg >/dev/null || { bad "This needs ffmpeg."; exit 1; }
+for t in ffmpeg node python3; do command -v "$t" >/dev/null || { bad "Recording the video needs '$t' on your PATH."; exit 1; }; done
 PARTNER=http://novapay.localhost:5180
 export TYK_DASHBOARD_URL="$DASH" TYK_DASHBOARD_KEY="$DASH_KEY"
 

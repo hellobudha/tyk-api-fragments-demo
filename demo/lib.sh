@@ -59,7 +59,7 @@ wait_until() {
 
 need_tools() {
   local t
-  for t in docker curl jq; do command -v "$t" >/dev/null || { bad "This walkthrough needs '$t' on your PATH."; exit 1; }; done
+  for t in docker curl jq openssl; do command -v "$t" >/dev/null || { bad "This walkthrough needs '$t' on your PATH."; exit 1; }; done
   docker info >/dev/null 2>&1 || { bad "Docker is not running."; exit 1; }
 }
 # Acts 3 to 5 build on Act 2: the APIs must already reference the Fragments.
